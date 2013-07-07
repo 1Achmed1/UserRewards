@@ -1,3 +1,4 @@
+
 package net.bigbadcraft.userrewards.utils;
 
 import java.io.BufferedReader;
@@ -9,33 +10,39 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import net.bigbadcraft.userrewards.Main;
 
-public class Storage {
+public class Storage{
 	
+	private static Main plugin;
 	public static File file;
-	private Main plugin;
 	public static HashMap<String, Integer> rewardedUsers;
-	String pluginFolder = plugin.getDataFolder().getAbsolutePath();
 	
 	public Storage(Main plugin){
-		this.plugin = plugin;
-		file = new File(pluginFolder, "player-points.yml");
+		Storage.plugin = plugin;
+		file = new File(plugin.getDataFolder(), "player-points.yml");
 		rewardedUsers = new HashMap<String, Integer>();
 	}
 	
 	public static void loadFile(){
 		try(BufferedReader reader = new BufferedReader(new FileReader(file))){
+			
 			String line;
+			
 			while ( (line = reader.readLine()) != null){
 				if (rewardedUsers.containsKey(line) == false){
 					rewardedUsers.put(line, 0);
 				}
 			}
+			
+			reader.close();
 		}catch (FileNotFoundException e){
+			plugin.getLogger().log(Level.SEVERE, file.toString() + " not found!");
 			e.printStackTrace();
-		}catch (IOException e) {
+		}catch (IOException e){
+			plugin.getLogger().log(Level.SEVERE, file.toString() + " is corrupted!");
 			e.printStackTrace();
 		}
 	}
@@ -44,14 +51,14 @@ public class Storage {
 		try(BufferedWriter out = new BufferedWriter(new FileWriter(file, true))){
 			
 			for (Entry<String, Integer> entry : rewardedUsers.entrySet()){
-				out.append(entry.getKey());
+				out.append(entry.getKey() + ": " + entry.getValue());
 				out.newLine();
 			}
 			
 			out.close();
-		}catch (IOException e){
+		} catch (IOException e) {
+			plugin.getLogger().log(Level.SEVERE, file.toString() +  " cannot be written to!");
 			e.printStackTrace();
 		}
 	}
-	
 }

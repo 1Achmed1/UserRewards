@@ -1,5 +1,7 @@
 package net.bigbadcraft.userrewards;
 
+import net.bigbadcraft.userrewards.utils.Storage;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -47,10 +49,12 @@ public class Commands implements CommandExecutor{
 			Player player = Bukkit.getPlayer(args[1]);
 			if (player != null){
 				if (args[0].equalsIgnoreCase("add")){
-					
+					Storage.rewardedUsers.put(player.getName(), Integer.parseInt(args[2]));
+					Storage.saveFile();
 				}
 				else if (args[0].equalsIgnoreCase("take")){
-					
+					Storage.rewardedUsers.remove(Integer.parseInt(args[2]));
+					Storage.saveFile();
 				}
 			}
 		}
