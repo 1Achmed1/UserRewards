@@ -1,6 +1,6 @@
 package net.bigbadcraft.userrewards;
 
-import net.bigbadcraft.userrewards.utils.Storage;
+import net.bigbadcraft.userrewards.resources.Storage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -48,14 +48,25 @@ public class Commands implements CommandExecutor{
 		if (args.length == 3){
 			Player player = Bukkit.getPlayer(args[1]);
 			if (player != null){
-				if (args[0].equalsIgnoreCase("add")){
-					Storage.rewardedUsers.put(player.getName(), Integer.parseInt(args[2]));
-					Storage.saveFile();
+				try{
+					if (args[0].equalsIgnoreCase("add")){
+						Storage.rewardedUsers.put(player.getName(), Integer.parseInt(args[2]));
+						Storage.saveFile();
+						if (Storage.contains(player.getName())){
+							sender.sendMessage(player.getName() + " is already in the file.");
+						}
+						sender.sendMessage("Rewarded " + args[2] + " points to " + player.getName());
+					}
+					else if (args[0].equalsIgnoreCase("take")){
+						Storage.rewardedUsers.remove(Integer.parseInt(args[2]));
+						Storage.saveFile();
+						sender.sendMessage("Removed " + args[2] + " points from " + player.getName()); 
+					}
+				}catch (NumberFormatException e){
+					sender.sendMessage("Please use whole numbers for fourth argument!");
 				}
-				else if (args[0].equalsIgnoreCase("take")){
-					Storage.rewardedUsers.remove(Integer.parseInt(args[2]));
-					Storage.saveFile();
-				}
+			}else{
+				sender.sendMessage(args[1] + " is offline.");
 			}
 		}
 		return true;

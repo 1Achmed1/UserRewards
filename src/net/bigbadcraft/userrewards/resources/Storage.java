@@ -1,5 +1,5 @@
 
-package net.bigbadcraft.userrewards.utils;
+package net.bigbadcraft.userrewards.resources;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,11 +22,34 @@ public class Storage{
 	
 	public Storage(Main plugin){
 		Storage.plugin = plugin;
-		file = new File(plugin.getDataFolder(), "player-points.yml");
+		file = new File(plugin.getDataFolder().getAbsolutePath(), "player-points.yml");
 		rewardedUsers = new HashMap<String, Integer>();
 	}
 	
-	public static void loadFile(){
+	public static boolean contains(String value){
+		return rewardedUsers.containsKey(value);
+	}
+	
+	public static void add(String value, int points){
+		if (Storage.contains(value) == false){
+			rewardedUsers.put(value, points);
+		}
+	}
+	
+	public static void createFile(){
+		if (file.exists() == false){
+			plugin.getLogger().info(file.toString() + " doesn't exist, creating..");
+			try{
+				file.createNewFile();
+				plugin.getLogger().info(file.toString() + " has been created.");
+			}catch (IOException e){
+				plugin.getLogger().log(Level.SEVERE, file.toString() + " could not be created!");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void loadFile(){
 		try(BufferedReader reader = new BufferedReader(new FileReader(file))){
 			
 			String line;
@@ -56,7 +79,7 @@ public class Storage{
 			}
 			
 			out.close();
-		} catch (IOException e) {
+		}catch (IOException e){
 			plugin.getLogger().log(Level.SEVERE, file.toString() +  " cannot be written to!");
 			e.printStackTrace();
 		}
