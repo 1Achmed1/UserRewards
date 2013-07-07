@@ -1,0 +1,8 @@
+name: UserRewards
+main: net.bigbadcraft.userrewards.Main
+version: 1.0
+commands:
+  urewards:
+    description: A list of UserRewards commands.
+    permission: userrewards.use
+    permission-message: §cYou do not have <permission>
