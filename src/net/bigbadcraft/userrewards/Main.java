@@ -1,6 +1,7 @@
 package net.bigbadcraft.userrewards;
 
 import java.io.File;
+import java.util.Map.Entry;
 
 import net.bigbadcraft.userrewards.resources.Storage;
 
@@ -15,21 +16,46 @@ public class Main extends JavaPlugin {
 		
 		this.saveDefaultConfig();
 		
+		/*
+		 * File resetting, problem could be here
+		 */
 		file = new File(this.getDataFolder().getAbsolutePath(), "player-points.yml");
 		new Storage(this, this.file);
+		Storage.loadFile();
+		
+		for (String s : this.getConfig().getStringList("points.console-commands")){
+			if (Storage.line != null){
+				Storage.replaceVariable(s);
+			}
+		}
+		
+		dispatchCommands();
 		
 		getCommand("urewards").setExecutor(new Commands());
+		getCommand("llist").setExecutor(new ListExecutor(this));
 		
 	}
 	
 	public void dispatchCommands(){
-		//check if player points >= than max-points, do this
-		if (this.getConfig().getBoolean("points.run-commands") == true){
-			for (String value : this.getConfig().getStringList("points.run-commands.")){
-				Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), value);
+		/*
+		 * Get the actual line that's being read
+		 */
+		if (Storage.line != null){
+			for (Entry<String, Integer> entry : Storage.rewardedUsers.entrySet()){
+				if (entry.getValue() == this.getConfig().getInt("points.max-points")){
+					if (this.getConfig().getBoolean("points.enable-commands") == true){
+						for (String value : this.getConfig().getStringList("points.console-commands")){
+							Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), value);
+						}
+					}
+				}
 			}
 		}
 	}
+	
+	/*
+	 * Have a scheduler to automate commands, make time configurable
+	 */
 	
 	public void onDisable(){
 		

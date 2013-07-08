@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Commands implements CommandExecutor{
+public class Commands implements CommandExecutor {
 	
 	String msg;
 	
@@ -54,7 +54,7 @@ public class Commands implements CommandExecutor{
 					if (args[0].equalsIgnoreCase("set")){
 						Storage.addValues(player.getName(), Integer.parseInt(args[2]));
 						Storage.saveFile();
-						sender.sendMessage("§aRewared " + args[2] + " points to " + player.getName());
+						sender.sendMessage("§a" + player.getName() + "'s points has been set to " + args[2]);
 					}
 					
 				}catch (NumberFormatException e){

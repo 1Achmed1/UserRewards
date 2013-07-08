@@ -6,3 +6,5 @@ commands:
     description: A list of UserRewards commands.
     permission: userrewards.use
     permission-message: §cYou do not have <permission>
+  llist:
+    description: Displays hashmap

@@ -17,7 +17,8 @@ public class Storage {
 	
 	private static Main plugin;
 	public static File file;
-	private static HashMap<String, Integer> rewardedUsers;
+	public static HashMap<String, Integer> rewardedUsers;
+	public static String line;
 	
 	public Storage(Main plugin, File file){
 		Storage.plugin = plugin;
@@ -36,14 +37,16 @@ public class Storage {
 		
 	}
 	
-	public void loadFile(){
+	public static void loadFile(){
 		try(BufferedReader reader = new BufferedReader(new FileReader(file))){
 			
-			String line;
-			
 			while ( (line = reader.readLine()) != null){
-				if (containsValues(line, Integer.parseInt(line)) == false){
-					rewardedUsers.put(line, Integer.parseInt(line));
+				try{
+					if (containsValues(line, Integer.parseInt(line)) == false){
+						rewardedUsers.put(line, Integer.parseInt(line));
+					}
+				}catch (NumberFormatException e){
+					
 				}
 			}
 			
@@ -82,8 +85,20 @@ public class Storage {
 		}
 	}
 	
+	/*
+	 * For later use
+	 */
 	public void removeValues(String value, int points){
 		rewardedUsers.remove(value);
 		rewardedUsers.remove(points);
 	}
+	
+	public static HashMap<String, Integer> getValues(){
+		return rewardedUsers;
+	}
+	
+	public static String replaceVariable(String stringList){
+		return stringList.replaceAll("%players%", line);
+	}
+	
 }
