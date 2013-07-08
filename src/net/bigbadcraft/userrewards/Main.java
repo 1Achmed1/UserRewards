@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 	
-	File file;
+	public static File file;
 	
 	public void onEnable(){
 		
@@ -20,7 +20,7 @@ public class Main extends JavaPlugin {
 		 * File resetting, problem could be here
 		 */
 		file = new File(this.getDataFolder().getAbsolutePath(), "player-points.yml");
-		new Storage(this, this.file);
+		new Storage(this, file);
 		Storage.loadFile();
 		
 		for (String s : this.getConfig().getStringList("points.console-commands")){
@@ -32,7 +32,6 @@ public class Main extends JavaPlugin {
 		dispatchCommands();
 		
 		getCommand("urewards").setExecutor(new Commands());
-		getCommand("llist").setExecutor(new ListExecutor(this));
 		
 	}
 	

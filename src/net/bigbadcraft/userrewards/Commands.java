@@ -1,5 +1,8 @@
 package net.bigbadcraft.userrewards;
 
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import net.bigbadcraft.userrewards.resources.Storage;
 
 import org.bukkit.Bukkit;
@@ -43,6 +46,20 @@ public class Commands implements CommandExecutor {
 		if (args.length < 3){
 			if (args[0].equalsIgnoreCase("set")){
 				sender.sendMessage(msg);
+			}
+			
+			if (args[0].equalsIgnoreCase("list")){
+				try{
+					Scanner scan = new Scanner(Main.file);
+					
+					while (scan.hasNextLine()){
+						sender.sendMessage(scan.nextLine());
+					}
+					
+					scan.close();
+				}catch (FileNotFoundException ex){
+					sender.sendMessage("§c" + Main.file.toString() + " could not be found!");
+				}
 			}
 		}
 		
