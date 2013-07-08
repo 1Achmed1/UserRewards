@@ -1,4 +1,7 @@
 points:
   max-points: 5
+  run-commands: false
+  trigger-commands:
+  - give %player% 364 5
 	
 

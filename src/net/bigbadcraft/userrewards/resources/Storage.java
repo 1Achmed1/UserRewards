@@ -1,4 +1,3 @@
-
 package net.bigbadcraft.userrewards.resources;
 
 import java.io.BufferedReader;
@@ -14,39 +13,27 @@ import java.util.logging.Level;
 
 import net.bigbadcraft.userrewards.Main;
 
-public class Storage{
+public class Storage {
 	
 	private static Main plugin;
 	public static File file;
-	public static HashMap<String, Integer> rewardedUsers;
+	private static HashMap<String, Integer> rewardedUsers;
 	
-	public Storage(Main plugin){
+	public Storage(Main plugin, File file){
 		Storage.plugin = plugin;
-		file = new File(plugin.getDataFolder().getAbsolutePath(), "player-points.yml");
 		rewardedUsers = new HashMap<String, Integer>();
-	}
-	
-	public static boolean contains(String value){
-		return rewardedUsers.containsKey(value);
-	}
-	
-	public static void add(String value, int points){
-		if (Storage.contains(value) == false){
-			rewardedUsers.put(value, points);
-		}
-	}
-	
-	public static void createFile(){
+		Storage.file = file;
+		
 		if (file.exists() == false){
-			plugin.getLogger().info(file.toString() + " doesn't exist, creating..");
 			try{
+				plugin.getLogger().log(Level.INFO, file.toString() + " doesn't exist, creating one..");
 				file.createNewFile();
-				plugin.getLogger().info(file.toString() + " has been created.");
-			}catch (IOException e){
+				plugin.getLogger().log(Level.INFO, file.toString() + " has been created.");
+			}catch (IOException ex){
 				plugin.getLogger().log(Level.SEVERE, file.toString() + " could not be created!");
-				e.printStackTrace();
 			}
 		}
+		
 	}
 	
 	public void loadFile(){
@@ -55,33 +42,48 @@ public class Storage{
 			String line;
 			
 			while ( (line = reader.readLine()) != null){
-				if (rewardedUsers.containsKey(line) == false){
-					rewardedUsers.put(line, 0);
+				if (containsValues(line, Integer.parseInt(line)) == false){
+					rewardedUsers.put(line, Integer.parseInt(line));
 				}
 			}
 			
 			reader.close();
 		}catch (FileNotFoundException e){
-			plugin.getLogger().log(Level.SEVERE, file.toString() + " not found!");
+			plugin.getLogger().log(Level.SEVERE, "Unable to locate: " + file.toString());
 			e.printStackTrace();
 		}catch (IOException e){
-			plugin.getLogger().log(Level.SEVERE, file.toString() + " is corrupted!");
+			plugin.getLogger().log(Level.SEVERE, "Unable to read: " + file.toString());
 			e.printStackTrace();
 		}
 	}
 	
 	public static void saveFile(){
-		try(BufferedWriter out = new BufferedWriter(new FileWriter(file, true))){
+		try(BufferedWriter out = new BufferedWriter(new FileWriter(file))){
 			
 			for (Entry<String, Integer> entry : rewardedUsers.entrySet()){
-				out.append(entry.getKey() + ": " + entry.getValue());
+				out.write(entry.getKey() + ": " + entry.getValue());
 				out.newLine();
 			}
 			
 			out.close();
 		}catch (IOException e){
-			plugin.getLogger().log(Level.SEVERE, file.toString() +  " cannot be written to!");
+			plugin.getLogger().log(Level.SEVERE, "Unable to write to: " + file.toString());
 			e.printStackTrace();
 		}
+	}
+	
+	public static boolean containsValues(String value, int points){
+		return rewardedUsers.containsKey(value) && rewardedUsers.containsKey(points);
+	}
+	
+	public static void addValues(String value, int points){
+		if (containsValues(value, points) == false){
+			rewardedUsers.put(value, points);
+		}
+	}
+	
+	public void removeValues(String value, int points){
+		rewardedUsers.remove(value);
+		rewardedUsers.remove(points);
 	}
 }
