@@ -2,6 +2,7 @@ package net.bigbadcraft.userrewards;
 
 import java.io.File;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import net.bigbadcraft.userrewards.resources.Storage;
 
@@ -12,9 +13,19 @@ public class Main extends JavaPlugin {
 	
 	public static File file;
 	
+	/** Adds logger for console messages */
+	public final Logger logger = logger.getlogger("UserRewards");
+	
 	public void onEnable(){
 		
 		this.saveDefaultConfig();
+		
+		/*
+		 *start console messages
+		 */
+		this.logger.info(pdfFile.getName() + " v" + pdfFile.getVersion() + "Has been Enabled!");
+		this.logger.info("Thank you for choosing UserRewards by HenzQ!");
+		this.logger.info("Check for updates @ http://dev.bukkit.org/bukkit-plugins/userrewards/");
 		
 		/*
 		 * File resetting, problem could be here
@@ -58,5 +69,9 @@ public class Main extends JavaPlugin {
 	
 	public void onDisable(){
 		
+		/*
+		 *start console messages
+		 */
+		this.logger.info(pdfFile.getName() + " v" + pdfFile.getVersion() + "Has been Disabled!!");
 	}
 }
